@@ -1,2 +1,5 @@
 /target
+src-tauri/target/
 docs/
+ui/node_modules/
+ui/dist/
