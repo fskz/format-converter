@@ -1,12 +1,12 @@
 <script lang="ts">
   import FileSelector from '../components/FileSelector.svelte';
-  import { convertFile, showInFolder } from '../lib/tauri';
+  import { convertFile, showInFolder, type ConvertResult } from '../lib/tauri';
 
   let inputPath: string = $state('');
   let outputPath: string = $state('');
   let direction: string = $state('xlsx2json');
   let converting: boolean = $state(false);
-  let result: { success: boolean; output_path: string; record_count: number; error: string | null } | null = $state(null);
+  let result: ConvertResult | null = $state(null);
 
   const xlsxFilters = [{ name: 'Excel', extensions: ['xlsx', 'xls'] }];
   const jsonFilters = [{ name: 'JSON', extensions: ['json'] }];

@@ -1,5 +1,6 @@
 use crate::commands::PreviewData;
 use calamine::{open_workbook_auto, Reader};
+use std::collections::HashSet;
 use std::path::Path;
 
 #[tauri::command]
@@ -49,12 +50,14 @@ fn preview_xlsx(path: &str) -> Result<PreviewData, String> {
         })
         .unwrap_or_default();
 
-    let all_rows: Vec<Vec<String>> = rows_iter
+    // 只转换前100行到字符串，其余仅计数
+    let preview_rows: Vec<Vec<String>> = rows_iter
+        .by_ref()
+        .take(100)
         .map(|row| row.iter().map(|cell| cell.to_string()).collect())
         .collect();
 
-    let total_rows = all_rows.len();
-    let preview_rows: Vec<Vec<String>> = all_rows.into_iter().take(100).collect();
+    let total_rows = preview_rows.len() + rows_iter.count();
 
     Ok(PreviewData {
         file_type: "xlsx".to_string(),
@@ -69,6 +72,7 @@ fn preview_json(path: &str) -> Result<PreviewData, String> {
     let data: serde_json::Value = serde_json::from_str(&content).map_err(|e| e.to_string())?;
 
     let records = data.as_array().ok_or("JSON 顶层必须是数组")?;
+    let total_rows = records.len();
 
     if records.is_empty() {
         return Ok(PreviewData {
@@ -79,19 +83,21 @@ fn preview_json(path: &str) -> Result<PreviewData, String> {
         });
     }
 
+    let mut seen: HashSet<&str> = HashSet::new();
     let mut headers: Vec<String> = Vec::new();
     for record in records {
         if let serde_json::Value::Object(map) = record {
             for key in map.keys() {
-                if !headers.contains(key) {
+                if seen.insert(key.as_str()) {
                     headers.push(key.clone());
                 }
             }
         }
     }
 
-    let all_rows: Vec<Vec<String>> = records
+    let preview_rows: Vec<Vec<String>> = records
         .iter()
+        .take(100)
         .map(|record| {
             if let serde_json::Value::Object(map) = record {
                 headers
@@ -107,9 +113,6 @@ fn preview_json(path: &str) -> Result<PreviewData, String> {
             }
         })
         .collect();
-
-    let total_rows = all_rows.len();
-    let preview_rows: Vec<Vec<String>> = all_rows.into_iter().take(100).collect();
 
     Ok(PreviewData {
         file_type: "json".to_string(),

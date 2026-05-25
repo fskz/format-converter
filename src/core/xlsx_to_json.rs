@@ -63,7 +63,6 @@ fn cell_to_value(cell: &DataType) -> Value {
         DataType::Empty => Value::Null,
         DataType::Bool(b) => Value::Bool(*b),
         DataType::Float(f) => {
-            // 如果是整数，输出为整数
             if *f == (*f as i64) as f64 {
                 Value::Number((*f as i64).into())
             } else {

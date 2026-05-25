@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
 use rust_xlsxwriter::Workbook;
 use serde_json::Value;
+use std::collections::HashSet;
 
 pub fn json_to_xlsx(input: &str, output: &str) -> Result<(usize, usize)> {
     let content = std::fs::read_to_string(input).context("无法读取 JSON 文件")?;
@@ -14,12 +15,12 @@ pub fn json_to_xlsx(input: &str, output: &str) -> Result<(usize, usize)> {
         anyhow::bail!("JSON 数组为空，无数据可转换");
     }
 
-    // 从所有记录中收集表头（保持顺序）
+    let mut seen: HashSet<&str> = HashSet::new();
     let mut headers: Vec<String> = Vec::new();
     for record in records {
         if let Value::Object(map) = record {
             for key in map.keys() {
-                if !headers.contains(key) {
+                if seen.insert(key.as_str()) {
                     headers.push(key.clone());
                 }
             }
