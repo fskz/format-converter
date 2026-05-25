@@ -1,4 +1,5 @@
 mod core;
+mod commands;
 
 use anyhow::Result;
 
