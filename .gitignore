@@ -4,3 +4,9 @@ docs/
 ui/node_modules/
 ui/dist/
 node_modules/
+src-tauri/gen/
+src-tauri/ui/
+Cargo.lock
+!src-tauri/Cargo.lock
+package-lock.json
+!ui/package-lock.json
