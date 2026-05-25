@@ -3,3 +3,4 @@ src-tauri/target/
 docs/
 ui/node_modules/
 ui/dist/
+node_modules/
