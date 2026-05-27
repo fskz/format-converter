@@ -14,6 +14,20 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
+// Mock @tanstack/react-virtual to render all items in tests
+vi.mock('@tanstack/react-virtual', () => ({
+  useVirtualizer: ({ count }: { count: number }) => ({
+    getVirtualItems: () =>
+      Array.from({ length: count }, (_, i) => ({
+        key: String(i),
+        index: i,
+        start: i * 35,
+        size: 35,
+      })),
+    getTotalSize: () => count * 35,
+  }),
+}));
+
 describe('DataTable', () => {
   it('renders headers correctly', () => {
     const headers = ['Name', 'Age', 'City'];

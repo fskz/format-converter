@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { FileSelector } from '@/components/FileSelector';
 import { DataTable } from '@/components/DataTable';
 import { usePreviewFile } from '@/hooks/usePreviewFile';
-import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 
 export function PreviewPage() {

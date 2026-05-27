@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { FileSelector } from '@/components/FileSelector';
 import { ProgressBar } from '@/components/ProgressBar';
 import { useBatchConvert } from '@/hooks/useBatchConvert';
@@ -43,25 +42,6 @@ export function BatchPage() {
         };
       });
       setFiles((prev) => [...prev, ...newFiles]);
-    }
-  };
-
-  const handleSelectOutputDir = async () => {
-    const selected = await open({ directory: true });
-    if (selected) {
-      setOutputDir(selected);
-      // Update output paths for existing files
-      setFiles((prev) =>
-        prev.map((f) => {
-          const baseName = f.input.split('/').pop() || '';
-          const name = baseName.replace(/\.[^.]+$/, '');
-          const ext = f.direction === 'xlsx2json' ? '.json' : '.xlsx';
-          return {
-            ...f,
-            output: `${selected}/${name}${ext}`,
-          };
-        }),
-      );
     }
   };
 

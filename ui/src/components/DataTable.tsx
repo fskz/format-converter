@@ -11,7 +11,7 @@ interface DataTableProps {
 
 export function DataTable({ headers, rows, maxHeight = 400 }: DataTableProps) {
   const { t } = useTranslation();
-  const parentRef = useRef<HTMLDivElement>(null);
+  const parentRef = useRef<HTMLTableSectionElement>(null);
 
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
