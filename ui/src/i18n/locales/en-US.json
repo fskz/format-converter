@@ -1,0 +1,45 @@
+{
+  "app": {
+    "title": "Format Converter",
+    "tabs": {
+      "convert": "Convert",
+      "preview": "Preview",
+      "batch": "Batch"
+    }
+  },
+  "convert": {
+    "selectInput": "Select Input File",
+    "selectOutput": "Output File Location",
+    "direction": "Conversion Direction",
+    "xlsx2json": "Excel → JSON",
+    "json2xlsx": "JSON → Excel",
+    "start": "Start Conversion",
+    "converting": "Converting...",
+    "success": "Conversion Complete",
+    "failed": "Conversion Failed",
+    "records": "{{count}} records",
+    "openFolder": "Open in Folder"
+  },
+  "preview": {
+    "selectFile": "Select File",
+    "fileType": "File Type",
+    "totalRows": "Total {{count}} rows",
+    "noFile": "Please select a file to preview"
+  },
+  "batch": {
+    "addFiles": "Add Files",
+    "selectOutputDir": "Select Output Directory",
+    "start": "Start Batch Conversion",
+    "converting": "Batch Converting...",
+    "progress": "Progress: {{current}}/{{total}}",
+    "currentFile": "Current File: {{file}}",
+    "completed": "Batch Conversion Complete",
+    "failed": "Batch Conversion Failed"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "noData": "No Data"
+  }
+}

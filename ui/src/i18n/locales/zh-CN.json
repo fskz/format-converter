@@ -1,0 +1,45 @@
+{
+  "app": {
+    "title": "格式转换器",
+    "tabs": {
+      "convert": "转换",
+      "preview": "预览",
+      "batch": "批量"
+    }
+  },
+  "convert": {
+    "selectInput": "选择输入文件",
+    "selectOutput": "输出文件位置",
+    "direction": "转换方向",
+    "xlsx2json": "Excel → JSON",
+    "json2xlsx": "JSON → Excel",
+    "start": "开始转换",
+    "converting": "转换中...",
+    "success": "转换完成",
+    "failed": "转换失败",
+    "records": "{{count}} 条记录",
+    "openFolder": "打开所在文件夹"
+  },
+  "preview": {
+    "selectFile": "选择文件",
+    "fileType": "文件类型",
+    "totalRows": "共 {{count}} 行",
+    "noFile": "请选择要预览的文件"
+  },
+  "batch": {
+    "addFiles": "添加文件",
+    "selectOutputDir": "选择输出目录",
+    "start": "开始批量转换",
+    "converting": "批量转换中...",
+    "progress": "进度: {{current}}/{{total}}",
+    "currentFile": "当前文件: {{file}}",
+    "completed": "批量转换完成",
+    "failed": "批量转换失败"
+  },
+  "common": {
+    "cancel": "取消",
+    "confirm": "确认",
+    "loading": "加载中...",
+    "noData": "暂无数据"
+  }
+}
