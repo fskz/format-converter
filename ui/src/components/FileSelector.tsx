@@ -1,4 +1,4 @@
-import { open } from '@tauri-apps/plugin-dialog';
+import { open, save } from '@tauri-apps/plugin-dialog';
 import { useTranslation } from 'react-i18next';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -29,15 +29,9 @@ export function FileSelector({
     if (mode === 'directory') {
       result = await open({ directory: true });
     } else if (mode === 'save') {
-      result = await open({
-        filters,
-        multiple: false,
-      });
+      result = await save({ filters });
     } else {
-      result = await open({
-        filters,
-        multiple: false,
-      });
+      result = await open({ filters, multiple: false });
     }
 
     if (result) {

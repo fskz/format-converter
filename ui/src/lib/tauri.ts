@@ -1,6 +1,8 @@
 import { invoke } from '@tauri-apps/api/core';
 import { listen, type UnlistenFn } from '@tauri-apps/api/event';
 
+export type ConvertDirection = 'xlsx2json' | 'json2xlsx';
+
 export interface ConvertResult {
   success: boolean;
   output_path: string;
@@ -18,7 +20,7 @@ export interface PreviewData {
 export interface BatchItem {
   input: string;
   output: string;
-  direction: string;
+  direction: ConvertDirection;
 }
 
 export interface BatchProgress {
@@ -31,7 +33,7 @@ export interface BatchProgress {
 export async function convertFile(
   input: string,
   output: string,
-  direction: string,
+  direction: ConvertDirection,
 ): Promise<ConvertResult> {
   return invoke<ConvertResult>('convert_file', { input, output, direction });
 }

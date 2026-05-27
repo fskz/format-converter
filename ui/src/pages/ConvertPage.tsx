@@ -1,64 +1,46 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import { DirectionToggle } from '@/components/DirectionToggle';
 import { FileSelector } from '@/components/FileSelector';
 import { useConvertFile } from '@/hooks/useConvertFile';
-import { showInFolder } from '@/lib/tauri';
+import { showInFolder, type ConvertDirection } from '@/lib/tauri';
+import { changeExtension } from '@/lib/utils';
 
 export function ConvertPage() {
   const { t } = useTranslation();
   const [inputPath, setInputPath] = useState('');
   const [outputPath, setOutputPath] = useState('');
-  const [direction, setDirection] = useState<'xlsx2json' | 'json2xlsx'>(
-    'xlsx2json',
-  );
-  const [result, setResult] = useState<{
-    success: boolean;
-    outputPath: string;
-    recordCount: number;
-  } | null>(null);
+  const [direction, setDirection] = useState<ConvertDirection>('xlsx2json');
 
   const convertMutation = useConvertFile();
 
-  const handleDirectionChange = (newDirection: 'xlsx2json' | 'json2xlsx') => {
+  const handleDirectionChange = (newDirection: ConvertDirection) => {
     setDirection(newDirection);
     setInputPath('');
     setOutputPath('');
-    setResult(null);
   };
 
   const handleInputChange = (path: string) => {
     setInputPath(path);
-    // Auto-generate output path
     if (path) {
       const ext = direction === 'xlsx2json' ? '.json' : '.xlsx';
-      const basePath = path.replace(/\.[^.]+$/, '');
-      setOutputPath(basePath + ext);
+      setOutputPath(changeExtension(path, ext));
     } else {
       setOutputPath('');
     }
-    setResult(null);
   };
 
   const handleConvert = async () => {
     if (!inputPath || !outputPath) return;
-
-    const convertResult = await convertMutation.mutateAsync({
+    await convertMutation.mutateAsync({
       input: inputPath,
       output: outputPath,
       direction,
     });
-
-    if (convertResult.success) {
-      setResult({
-        success: true,
-        outputPath: convertResult.output_path,
-        recordCount: convertResult.record_count,
-      });
-    }
   };
 
+  const result = convertMutation.data;
   const inputFilters =
     direction === 'xlsx2json'
       ? [{ name: 'Excel Files', extensions: ['xlsx', 'xls'] }]
@@ -66,23 +48,7 @@ export function ConvertPage() {
 
   return (
     <div className="space-y-6 p-4">
-      <div className="space-y-2">
-        <Label>{t('convert.direction')}</Label>
-        <div className="flex gap-4">
-          <Button
-            variant={direction === 'xlsx2json' ? 'default' : 'outline'}
-            onClick={() => handleDirectionChange('xlsx2json')}
-          >
-            {t('convert.xlsx2json')}
-          </Button>
-          <Button
-            variant={direction === 'json2xlsx' ? 'default' : 'outline'}
-            onClick={() => handleDirectionChange('json2xlsx')}
-          >
-            {t('convert.json2xlsx')}
-          </Button>
-        </div>
-      </div>
+      <DirectionToggle value={direction} onChange={handleDirectionChange} />
 
       <FileSelector
         label={t('convert.selectInput')}
@@ -109,18 +75,18 @@ export function ConvertPage() {
           : t('convert.start')}
       </Button>
 
-      {result && (
+      {result?.success && (
         <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-md space-y-2">
           <p className="text-green-800 dark:text-green-200 font-medium">
             {t('convert.success')}
           </p>
           <p className="text-sm text-muted-foreground">
-            {t('convert.records', { count: result.recordCount })}
+            {t('convert.records', { count: result.record_count })}
           </p>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => showInFolder(result.outputPath)}
+            onClick={() => showInFolder(result.output_path)}
           >
             {t('convert.openFolder')}
           </Button>

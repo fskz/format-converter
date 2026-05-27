@@ -1,12 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { convertFile, type ConvertResult } from '@/lib/tauri';
+import {
+  convertFile,
+  type ConvertResult,
+  type ConvertDirection,
+} from '@/lib/tauri';
 
 interface ConvertParams {
   input: string;
   output: string;
-  direction: string;
+  direction: ConvertDirection;
 }
 
 export function useConvertFile() {

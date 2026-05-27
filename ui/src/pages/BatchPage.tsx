@@ -2,23 +2,23 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { DirectionToggle } from '@/components/DirectionToggle';
 import { FileSelector } from '@/components/FileSelector';
 import { ProgressBar } from '@/components/ProgressBar';
 import { useBatchConvert } from '@/hooks/useBatchConvert';
 import { useBatchProgress } from '@/hooks/useBatchProgress';
 import { open } from '@tauri-apps/plugin-dialog';
-import type { BatchItem } from '@/lib/tauri';
+import { getFileName, removeExtension } from '@/lib/utils';
+import type { BatchItem, ConvertDirection } from '@/lib/tauri';
 
 export function BatchPage() {
   const { t } = useTranslation();
   const [files, setFiles] = useState<BatchItem[]>([]);
   const [outputDir, setOutputDir] = useState('');
-  const [direction, setDirection] = useState<'xlsx2json' | 'json2xlsx'>(
-    'xlsx2json',
-  );
+  const [direction, setDirection] = useState<ConvertDirection>('xlsx2json');
 
   const batchMutation = useBatchConvert();
-  const progress = useBatchProgress();
+  const { progress, reset } = useBatchProgress();
 
   const handleAddFiles = async () => {
     const selected = await open({
@@ -31,10 +31,9 @@ export function BatchPage() {
 
     if (selected) {
       const paths = Array.isArray(selected) ? selected : [selected];
+      const ext = direction === 'xlsx2json' ? '.json' : '.xlsx';
       const newFiles: BatchItem[] = paths.map((input) => {
-        const ext = direction === 'xlsx2json' ? '.json' : '.xlsx';
-        const baseName = input.split('/').pop() || '';
-        const name = baseName.replace(/\.[^.]+$/, '');
+        const name = removeExtension(getFileName(input));
         return {
           input,
           output: outputDir ? `${outputDir}/${name}${ext}` : '',
@@ -48,9 +47,8 @@ export function BatchPage() {
   const handleStartBatch = async () => {
     if (files.length === 0 || !outputDir) return;
 
+    reset();
     await batchMutation.mutateAsync(files);
-
-    // Clear files after successful batch
     setFiles([]);
   };
 
@@ -60,23 +58,7 @@ export function BatchPage() {
 
   return (
     <div className="space-y-6 p-4">
-      <div className="space-y-2">
-        <Label>{t('convert.direction')}</Label>
-        <div className="flex gap-4">
-          <Button
-            variant={direction === 'xlsx2json' ? 'default' : 'outline'}
-            onClick={() => setDirection('xlsx2json')}
-          >
-            {t('convert.xlsx2json')}
-          </Button>
-          <Button
-            variant={direction === 'json2xlsx' ? 'default' : 'outline'}
-            onClick={() => setDirection('json2xlsx')}
-          >
-            {t('convert.json2xlsx')}
-          </Button>
-        </div>
-      </div>
+      <DirectionToggle value={direction} onChange={setDirection} />
 
       <div className="flex gap-4">
         <Button onClick={handleAddFiles} variant="outline">
